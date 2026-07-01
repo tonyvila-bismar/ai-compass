@@ -439,6 +439,8 @@ const ARCHETYPES = [
 const SEEDS=[[-3.9887, -3.3523], [-4.2539, -1.3466], [-2.5386, 1.5567], [-2.6938, -3.8332], [-2.9712, -1.2463], [-1.5043, 1.49], [-0.3409, 2.8248], [-0.2579, -4.1591], [0.0442, -2.3791], [0.5856, 0.3469], [0.943, 2.1841], [1.6152, 3.6044], [2.0911, -4.4177], [1.4594, -2.6224], [2.3077, -2.6044], [2.1338, -0.6499], [2.4435, 1.4131], [2.7514, 2.6649], [3.7725, 4.4914], [3.2963, -4.5922], [3.5363, -2.942], [3.7193, -0.8298], [3.9654, 1.3477], [4.4317, 3.3], [5.2866, 5.0658], [4.4313, -4.0925], [4.9861, -2.068], [5.8433, 1.3922], [6.369, 4.2134], [6.6344, 5.438]];
 const ICOV=[[0.12261, -0.073063], [-0.073063, 0.149168]];
 const VIEW=[-5.14, 7.71, -5.54, 6.25];
+const CHART_PADDING = 44;
+const CHART_MAX_SIZE = 460;
 
 function mdist(x, y, sx, sy) {           // squared Mahalanobis distance to seed (sx,sy)
   const dx = x - sx, dy = y - sy;
@@ -464,7 +466,7 @@ function CompassChart({ point, highlightIdx, showNumbers, onSelectArchetype }) {
     if (!onSelectArchetype || !canvasRef.current) return;
     const rect = canvasRef.current.getBoundingClientRect();
     const size = rect.width;
-    const pad = 44, plot = size - pad * 2;
+    const pad = CHART_PADDING, plot = size - pad * 2;
     const px = e.clientX - rect.left;
     const py = e.clientY - rect.top;
     if (px < pad || px > pad + plot || py < pad || py > pad + plot) return;
@@ -477,12 +479,12 @@ function CompassChart({ point, highlightIdx, showNumbers, onSelectArchetype }) {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const cw = containerRef.current.clientWidth;
-    const size = Math.min(cw, 460);
+    const size = Math.min(cw, CHART_MAX_SIZE);
     canvas.width = size * 2; canvas.height = size * 2;
     canvas.style.width = size + "px"; canvas.style.height = size + "px";
     const ctx = canvas.getContext("2d");
     ctx.scale(2, 2);
-    const pad = 44, plot = size - pad * 2;
+    const pad = CHART_PADDING, plot = size - pad * 2;
     const [vx0, vx1, vy0, vy1] = VIEW;
     const xS = (v) => pad + ((v - vx0) / (vx1 - vx0)) * plot;
     const yS = (v) => pad + ((vy1 - v) / (vy1 - vy0)) * plot;
@@ -553,7 +555,7 @@ function CompassChart({ point, highlightIdx, showNumbers, onSelectArchetype }) {
     ctx.strokeRect(pad, pad, plot, plot);
   }, [point, highlightIdx, showNumbers]);
   return (
-    <div ref={containerRef} style={{ maxWidth: 460, margin: "0 auto" }}>
+    <div ref={containerRef} style={{ maxWidth: CHART_MAX_SIZE, margin: "0 auto" }}>
       <canvas ref={canvasRef} onClick={handleClick} style={{ cursor: onSelectArchetype ? "pointer" : "default" }} />
     </div>
   );
