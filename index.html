@@ -457,9 +457,22 @@ function seedIndex(x, y) {                // nearest seed = the archetype (weigh
 function getArchetype(x, y) { return ARCHETYPES[seedIndex(x, y)]; }
 
 // ---- compass chart: territory shading + seed dots; optional user point and seed numbers ----
-function CompassChart({ point, highlightIdx, showNumbers }) {
+function CompassChart({ point, highlightIdx, showNumbers, onSelectArchetype }) {
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
+  const handleClick = (e) => {
+    if (!onSelectArchetype || !canvasRef.current) return;
+    const rect = canvasRef.current.getBoundingClientRect();
+    const size = rect.width;
+    const pad = 44, plot = size - pad * 2;
+    const px = e.clientX - rect.left;
+    const py = e.clientY - rect.top;
+    if (px < pad || px > pad + plot || py < pad || py > pad + plot) return;
+    const [vx0, vx1, vy0, vy1] = VIEW;
+    const impact = vx0 + ((px - pad) / plot) * (vx1 - vx0);
+    const valence = vy1 - ((py - pad) / plot) * (vy1 - vy0);
+    onSelectArchetype(seedIndex(impact, valence));
+  };
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -541,22 +554,29 @@ function CompassChart({ point, highlightIdx, showNumbers }) {
   }, [point, highlightIdx, showNumbers]);
   return (
     <div ref={containerRef} style={{ maxWidth: 460, margin: "0 auto" }}>
-      <canvas ref={canvasRef} />
+      <canvas ref={canvasRef} onClick={handleClick} style={{ cursor: onSelectArchetype ? "pointer" : "default" }} />
     </div>
   );
 }
 
 // ---- the "see all archetypes" view: full chart + every archetype's name/saint/description ----
 function AllArchetypes({ onBack }) {
+  const [selectedIdx, setSelectedIdx] = useState(null);
+  const visible = selectedIdx === null ? ARCHETYPES.map((a, i) => ({ a, i })) : [{ a: ARCHETYPES[selectedIdx], i: selectedIdx }];
   return (
     <div style={{ minHeight: "100vh", background: "#1a1a2e", color: "#fff", fontFamily: "system-ui, -apple-system, sans-serif", padding: "40px 20px" }}>
       <div style={{ maxWidth: 560, margin: "0 auto" }}>
         <h1 style={{ fontSize: 26, fontWeight: 700, textAlign: "center", marginBottom: 6 }}>All {ARCHETYPES.length} Archetypes</h1>
-        <p style={{ textAlign: "center", color: "rgba(255,255,255,0.4)", fontSize: 13, marginBottom: 24 }}>The whole map. Numbers on the chart match the list below.</p>
-        <CompassChart highlightIdx={-1} showNumbers={true} />
+        <p style={{ textAlign: "center", color: "rgba(255,255,255,0.4)", fontSize: 13, marginBottom: 24 }}>{selectedIdx === null ? "Click anywhere on the map to focus on a single archetype." : "Click another region to switch focus, or show the full list again."}</p>
+        <CompassChart highlightIdx={selectedIdx ?? -1} showNumbers={selectedIdx === null} onSelectArchetype={(idx) => setSelectedIdx((prev) => prev === idx ? null : idx)} />
+        {selectedIdx !== null && (
+          <div style={{ textAlign: "center", marginTop: 16 }}>
+            <button onClick={() => setSelectedIdx(null)} style={{ background: "none", border: "none", color: "rgba(255,220,100,0.7)", fontSize: 13, cursor: "pointer", textDecoration: "underline", textUnderlineOffset: "3px", padding: "6px 0" }}>Show all archetypes</button>
+          </div>
+        )}
         <div style={{ marginTop: 28, display: "flex", flexDirection: "column", gap: 12 }}>
-          {ARCHETYPES.map((a, i) => (
-            <div key={i} style={{ display: "flex", gap: 12, padding: "14px 16px", background: "rgba(255,255,255,0.04)", borderRadius: 10, alignItems: "flex-start" }}>
+          {visible.map(({ a, i }) => (
+            <div key={i} style={{ display: "flex", gap: 12, padding: "14px 16px", background: "rgba(255,255,255,0.04)", borderRadius: 10, alignItems: "flex-start", border: selectedIdx === i ? `1px solid ${a.color}` : "1px solid transparent" }}>
               <div style={{ flexShrink: 0, width: 26, textAlign: "right", fontFamily: "monospace", fontSize: 13, color: "rgba(255,255,255,0.4)", paddingTop: 2 }}>{i + 1}</div>
               <div style={{ flexShrink: 0, width: 12, height: 12, borderRadius: 3, background: a.color, marginTop: 4 }} />
               <div style={{ flex: 1 }}>
