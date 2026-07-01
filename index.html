@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>The AI Compass</title>
 <meta property="og:title" content="The AI Compass" />
-<meta property="og:description" content="29 questions. Two axes. Which of 30 AI archetypes are you?" />
+<meta property="og:description" content="15 questions. Two axes. Which of 30 AI archetypes are you?" />
 <meta name="twitter:card" content="summary" />
 <style>
   html, body { margin: 0; padding: 0; background: #1a1a2e; }
@@ -34,7 +34,7 @@
 </script>
 <script type="text/babel" data-presets="react">
 const { useState, useRef, useEffect } = React;
-console.log("%c AI Compass v11 ", "background:#ffdc64;color:#1a1a2e;font-weight:bold;padding:2px 6px;border-radius:3px;", "loaded — 30 archetypes, Mahalanobis nearest-seed territories, all-archetypes view");
+console.log("%c AI Compass v12 ", "background:#ffdc64;color:#1a1a2e;font-weight:bold;padding:2px 6px;border-radius:3px;", "loaded — 30 archetypes, Mahalanobis nearest-seed territories, all-archetypes view");
 
 const QUESTIONS = [
   {
@@ -192,169 +192,6 @@ const QUESTIONS = [
       { text: "Steady, real integration into work and daily life. Less dramatic than predicted, but meaningful.", impact: 4, valence: 4 },
       { text: "Major societal shifts underway — job markets, education, and creative industries fundamentally changed.", impact: 8, valence: 0 },
       { text: "We're living in a different world. AI reshaped everything faster than anyone expected.", impact: 10, valence: 3 },
-    ],
-  },
-  {
-    topic: "AI and relationships",
-    prompt: "People are forming emotional bonds with AI — companions, therapists, friends.",
-    options: [
-      { text: "It's bleak. People are talking to a product and calling it intimacy.", impact: -2, valence: -7 },
-      { text: "Concerning — it fills a void but it's not real connection.", impact: 2, valence: -4 },
-      { text: "If it helps lonely people, I'm not going to judge.", impact: 1, valence: 3 },
-      { text: "It's a genuinely new kind of relationship and we should take it seriously.", impact: 6, valence: 4 },
-      { text: "This is the beginning of something profound about what connection even means.", impact: 9, valence: 7 },
-    ],
-  },
-  {
-    topic: "AI and war",
-    prompt: "Autonomous weapons, drone targeting, military decision-making — AI is already in the loop.",
-    options: [
-      { text: "Another overhyped defense boondoggle. The Pentagon will spend billions and it'll barely work.", impact: -4, valence: -5 },
-      { text: "The AI part is overhyped. Human judgment still runs wars. This is just better spreadsheets for the military.", impact: -3, valence: 3 },
-      { text: "It's the single most dangerous application and should be banned by treaty.", impact: 6, valence: -9 },
-      { text: "Deeply concerning, but so was every military technology ever.", impact: 4, valence: -4 },
-      { text: "The genie is out of the bottle. Better to have your side using it than not.", impact: 5, valence: -1 },
-      { text: "It could actually reduce casualties if deployed carefully.", impact: 6, valence: 4 },
-      { text: "Whoever has the best AI wins. That's always been how power works.", impact: 8, valence: 1 },
-    ],
-  },
-  {
-    topic: "Open source vs. closed",
-    prompt: "Should AI models be open-sourced, or is that too dangerous?",
-    options: [
-      { text: "Open source is the only check on corporate power. Release everything.", impact: -1, valence: 6 },
-      { text: "Open weights with some guardrails. The benefits outweigh the risks.", impact: 2, valence: 4 },
-      { text: "It depends on the capability level — frontier models should stay closed.", impact: 5, valence: -2 },
-      { text: "Releasing powerful models openly is reckless and irresponsible.", impact: 6, valence: -6 },
-      { text: "Doesn't matter — the capabilities will proliferate regardless.", impact: 7, valence: 0 },
-    ],
-  },
-  {
-    topic: "AI and science",
-    prompt: "AI is being used in drug discovery, materials science, protein folding, climate modeling.",
-    options: [
-      { text: "The hype outpaces the results even in science.", impact: -3, valence: -2 },
-      { text: "Useful tool for specific problems, not the revolution the press releases claim.", impact: 1, valence: 2 },
-      { text: "It's doing real work here, quietly, while everyone argues about chatbots.", impact: 5, valence: 7 },
-      { text: "This is where AI actually matters — not generating images, solving hard problems.", impact: 7, valence: 8 },
-      { text: "This will be remembered as AI's real contribution, not anything consumer-facing.", impact: 9, valence: 6 },
-    ],
-  },
-  {
-    topic: "The alignment problem",
-    prompt: "Can we ensure AI systems do what we actually want them to do?",
-    options: [
-      { text: "It's a made-up problem. The systems do what they're trained to do. They're fine.", impact: -6, valence: 5 },
-      { text: "It's just a text prediction tool. It easily forgets its context. It tells us what we want to hear. It's not always coherent. Reasoning is just another text prediction, not thoughts. But it's not plotting against us.", impact: -3, valence: 5 },
-      { text: "It's a real engineering challenge, not an existential crisis.", impact: 3, valence: 1 },
-      { text: "We'll figure it out. Humans are good at building things they can control.", impact: 4, valence: 5 },
-      { text: "It's genuinely hard and we're not taking it seriously enough.", impact: 7, valence: -5 },
-      { text: "It may be unsolvable, which is terrifying.", impact: 9, valence: -8 },
-    ],
-  },
-  {
-    topic: "Your friends and AI",
-    prompt: "Think about the people in your life. How are they relating to AI?",
-    options: [
-      { text: "Most of them think it's a fad or a toy. They're not wrong.", impact: -5, valence: 0 },
-      { text: "Mixed — some use it, some ignore it, nobody's obsessed.", impact: -1, valence: 1 },
-      { text: "They try to convert me and it's getting tensions up.", impact: 3, valence: 4 },
-      { text: "I'm the one who tells them about it. They're coming around.", impact: 4, valence: 5 },
-      { text: "We argue about it constantly. It's become a fault line.", impact: 5, valence: -2 },
-      { text: "My social circle has basically split into believers and skeptics.", impact: 6, valence: -3 },
-    ],
-  },
-  {
-    topic: "AI coding",
-    prompt: "AI can now write, debug, and review code. Programmers use it daily.",
-    options: [
-      { text: "It writes mediocre code that creates more bugs than it fixes.", impact: -3, valence: -4 },
-      { text: "Fancy autocomplete. Useful, not transformative.", impact: 0, valence: 2 },
-      { text: "It's genuinely changed how I work — or would, if I coded.", impact: 4, valence: 5 },
-      { text: "The best junior developer I've ever had. And it never sleeps.", impact: 6, valence: 7 },
-      { text: "Within five years most code will be written by AI, not humans.", impact: 9, valence: 3 },
-    ],
-  },
-  {
-    topic: "China and the AI race",
-    prompt: "The US and China are in an AI arms race. Does it matter who wins?",
-    options: [
-      { text: "'Wins' is the wrong frame. AI development isn't a race with a finish line.", impact: -4, valence: -1 },
-      { text: "Neither side's AI is as powerful as they claim. The 'race' is mostly PR.", impact: -5, valence: 4 },
-      { text: "It matters, but not as much as the hawks claim.", impact: 1, valence: 0 },
-      { text: "Competition is good — it accelerates progress for everyone.", impact: 6, valence: 5 },
-      { text: "It matters enormously. Whoever leads in AI leads in everything.", impact: 8, valence: -1 },
-      { text: "This is the new Cold War, and AI is the new nuclear weapon.", impact: 9, valence: -7 },
-    ],
-  },
-  {
-    topic: "AI and privacy",
-    prompt: "AI systems require enormous amounts of data. Your data.",
-    options: [
-      { text: "I don't care. I already gave up privacy for free email and search.", impact: 0, valence: 2 },
-      { text: "AI doesn't change the privacy equation. It's the same data the same companies already had.", impact: -4, valence: 3 },
-      { text: "It's a real concern but not fundamentally different from what Big Tech already does.", impact: 1, valence: -2 },
-      { text: "AI makes the surveillance problem qualitatively worse, not just bigger.", impact: 5, valence: -6 },
-      { text: "This is the actual threat — not robot overlords, but total information awareness.", impact: 6, valence: -8 },
-      { text: "Privacy as we knew it is over. The question is what we build on the other side.", impact: 8, valence: -1 },
-    ],
-  },
-  {
-    topic: "The vibes",
-    prompt: "Forget the arguments for a second. How does AI make you feel?",
-    options: [
-      { text: "Bored. It's fine. Can we talk about something else?", impact: -6, valence: 0 },
-      { text: "Uneasy. Something about it bothers me that I can't fully articulate.", impact: 2, valence: -5 },
-      { text: "Curious. I want to see where this goes.", impact: 3, valence: 3 },
-      { text: "Angry. This is getting worse and worse and it feels like not enough is done.", impact: 6, valence: -4 },
-      { text: "Excited. This is the most interesting thing happening right now.", impact: 7, valence: 7 },
-      { text: "Scared. Not of the technology — of us.", impact: 8, valence: -6 },
-    ],
-  },
-  {
-    topic: "The dead internet",
-    prompt: "AI-generated content now floods search results, social media, and comment sections.",
-    options: [
-      { text: "The internet has been dying for years. AI is just the latest symptom.", impact: -3, valence: -5 },
-      { text: "Most people can't tell the difference and don't care.", impact: -1, valence: -2 },
-      { text: "It's a filter problem, not an AI problem. Better tools will fix it.", impact: 2, valence: 3 },
-      { text: "It's genuinely making discovery and trust harder online.", impact: 3, valence: -6 },
-      { text: "The old internet is gone. What replaces it might actually be better.", impact: 6, valence: 4 },
-    ],
-  },
-  {
-    topic: "AI guardrails",
-    prompt: "Current AI systems refuse certain requests, hedge their answers, and add disclaimers.",
-    options: [
-      { text: "The guardrails are mostly corporate liability theater, not safety.", impact: -2, valence: -4 },
-      { text: "Good. Without guardrails these things would be dangerous.", impact: 4, valence: -3 },
-      { text: "They're too aggressive — they make the product worse for no real safety gain.", impact: 3, valence: 4 },
-      { text: "Give me the raw model. I'm an adult.", impact: 5, valence: 6 },
-      { text: "The fact that they need guardrails at all tells you something important.", impact: 6, valence: -5 },
-    ],
-  },
-  {
-    topic: "AI hype cycles",
-    prompt: "We've been through blockchain, the metaverse, self-driving cars. Is AI different?",
-    options: [
-      { text: "No. Same playbook, same players, same outcome.", impact: -8, valence: -3 },
-      { text: "Similar dynamics, but the underlying technology is more real this time.", impact: 2, valence: 1 },
-      { text: "Comparable dynamics, but they upped their game.", impact: 3, valence: 2 },
-      { text: "Those comparisons are lazy. AI is already useful in ways crypto never was.", impact: 5, valence: 4 },
-      { text: "Every technology gets overhyped. That doesn't mean it isn't transformative.", impact: 7, valence: 3 },
-      { text: "This is categorically different and the people making those comparisons will look foolish.", impact: 10, valence: 5 },
-    ],
-  },
-  {
-    topic: "If you could go back",
-    prompt: "Imagine you could prevent the release of GPT-3 and everything after. Would you?",
-    options: [
-      { text: "Yes. The harms already outweigh the benefits.", impact: -1, valence: -8 },
-      { text: "It wouldn't matter — someone else would have built it.", impact: 5, valence: 0 },
-      { text: "I'd go back and make sure it was built more carefully, not prevent it.", impact: 6, valence: -2 },
-      { text: "Tempting, but no — you can't un-discover things, and the benefits are real.", impact: 4, valence: 2 },
-      { text: "Prevent it? It's a chatbot. This isn't the Manhattan Project. Relax.", impact: -6, valence: 5 },
-      { text: "Absolutely not. This is one of the most important developments in human history.", impact: 8, valence: 7 },
     ],
   },
   {
