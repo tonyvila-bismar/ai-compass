@@ -34,7 +34,7 @@
 </script>
 <script type="text/babel" data-presets="react">
 const { useState, useRef, useEffect } = React;
-console.log("%c AI Compass v12 ", "background:#ffdc64;color:#1a1a2e;font-weight:bold;padding:2px 6px;border-radius:3px;", "loaded — 30 archetypes, Mahalanobis nearest-seed territories, all-archetypes view");
+console.log("%c AI Compass v12 ", "background:#ffdc64;color:#1a1a2e;font-weight:bold;padding:2px 6px;border-radius:3px;", "loaded — 15 questions, 30 archetypes, Mahalanobis nearest-seed territories, all-archetypes view");
 
 const QUESTIONS = [
   {
@@ -278,9 +278,9 @@ const ARCHETYPES = [
 // the population covariance (icov), place each archetype's seed at its answerers' centroid,
 // then classify by argmin (x-seed)' icov (x-seed). No expansion, no rectangles, no weights.
 // SEEDS[i] aligns with ARCHETYPES[i] by index. VIEW = [xmin,xmax,ymin,ymax] display window.
-const SEEDS=[[-3.9887, -3.3523], [-4.2539, -1.3466], [-2.5386, 1.5567], [-2.6938, -3.8332], [-2.9712, -1.2463], [-1.5043, 1.49], [-0.3409, 2.8248], [-0.2579, -4.1591], [0.0442, -2.3791], [0.5856, 0.3469], [0.943, 2.1841], [1.6152, 3.6044], [2.0911, -4.4177], [1.4594, -2.6224], [2.3077, -2.6044], [2.1338, -0.6499], [2.4435, 1.4131], [2.7514, 2.6649], [3.7725, 4.4914], [3.2963, -4.5922], [3.5363, -2.942], [3.7193, -0.8298], [3.9654, 1.3477], [4.4317, 3.3], [5.2866, 5.0658], [4.4313, -4.0925], [4.9861, -2.068], [5.8433, 1.3922], [6.369, 4.2134], [6.6344, 5.438]];
-const ICOV=[[0.12261, -0.073063], [-0.073063, 0.149168]];
-const VIEW=[-5.14, 7.71, -5.54, 6.25];
+const SEEDS=[[-4.9254,-3.9447],[-4.6232,-2.5776],[-2.3412,0.7331],[-3.6232,-4.2499],[-3.1489,-2.0359],[-0.9724,0.8548],[0.5251,2.4884],[-0.8709,-4.3106],[-0.2632,-2.5317],[0.4834,0.0952],[1.0485,1.9905],[2.2567,3.4456],[1.5874,-4.4281],[0.9743,-2.6591],[1.9612,-2.6360],[1.9008,-0.4955],[2.5198,1.3478],[2.8414,2.4372],[3.8259,4.6287],[2.8393,-4.5023],[3.1648,-2.9320],[3.5688,-0.3995],[3.8678,1.4799],[4.5500,3.1155],[5.6875,5.2573],[3.3652,-4.1950],[4.1860,-1.7333],[5.2766,1.9757],[6.3995,4.5300],[7.0362,5.9291]];
+const ICOV=[[0.151354, -0.117316], [-0.117316, 0.182152]];
+const VIEW=[-5.98, 8.18, -5.74, 6.87];
 
 function mdist(x, y, sx, sy) {           // squared Mahalanobis distance to seed (sx,sy)
   const dx = x - sx, dy = y - sy;
