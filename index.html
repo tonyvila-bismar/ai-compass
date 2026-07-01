@@ -439,6 +439,8 @@ const ARCHETYPES = [
 const SEEDS=[[-3.9887, -3.3523], [-4.2539, -1.3466], [-2.5386, 1.5567], [-2.6938, -3.8332], [-2.9712, -1.2463], [-1.5043, 1.49], [-0.3409, 2.8248], [-0.2579, -4.1591], [0.0442, -2.3791], [0.5856, 0.3469], [0.943, 2.1841], [1.6152, 3.6044], [2.0911, -4.4177], [1.4594, -2.6224], [2.3077, -2.6044], [2.1338, -0.6499], [2.4435, 1.4131], [2.7514, 2.6649], [3.7725, 4.4914], [3.2963, -4.5922], [3.5363, -2.942], [3.7193, -0.8298], [3.9654, 1.3477], [4.4317, 3.3], [5.2866, 5.0658], [4.4313, -4.0925], [4.9861, -2.068], [5.8433, 1.3922], [6.369, 4.2134], [6.6344, 5.438]];
 const ICOV=[[0.12261, -0.073063], [-0.073063, 0.149168]];
 const VIEW=[-5.14, 7.71, -5.54, 6.25];
+const CHART_PADDING = 44;
+const CHART_MAX_SIZE = 460;
 
 function mdist(x, y, sx, sy) {           // squared Mahalanobis distance to seed (sx,sy)
   const dx = x - sx, dy = y - sy;
@@ -457,19 +459,32 @@ function seedIndex(x, y) {                // nearest seed = the archetype (weigh
 function getArchetype(x, y) { return ARCHETYPES[seedIndex(x, y)]; }
 
 // ---- compass chart: territory shading + seed dots; optional user point and seed numbers ----
-function CompassChart({ point, highlightIdx, showNumbers }) {
+function CompassChart({ point, highlightIdx, showNumbers, onSelectArchetype }) {
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
+  const handleClick = (e) => {
+    if (!onSelectArchetype || !canvasRef.current) return;
+    const rect = canvasRef.current.getBoundingClientRect();
+    const size = rect.width;
+    const pad = CHART_PADDING, plot = size - pad * 2;
+    const px = e.clientX - rect.left;
+    const py = e.clientY - rect.top;
+    if (px < pad || px > pad + plot || py < pad || py > pad + plot) return;
+    const [vx0, vx1, vy0, vy1] = VIEW;
+    const impact = vx0 + ((px - pad) / plot) * (vx1 - vx0);
+    const valence = vy1 - ((py - pad) / plot) * (vy1 - vy0);
+    onSelectArchetype(seedIndex(impact, valence));
+  };
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const cw = containerRef.current.clientWidth;
-    const size = Math.min(cw, 460);
+    const size = Math.min(cw, CHART_MAX_SIZE);
     canvas.width = size * 2; canvas.height = size * 2;
     canvas.style.width = size + "px"; canvas.style.height = size + "px";
     const ctx = canvas.getContext("2d");
     ctx.scale(2, 2);
-    const pad = 44, plot = size - pad * 2;
+    const pad = CHART_PADDING, plot = size - pad * 2;
     const [vx0, vx1, vy0, vy1] = VIEW;
     const xS = (v) => pad + ((v - vx0) / (vx1 - vx0)) * plot;
     const yS = (v) => pad + ((vy1 - v) / (vy1 - vy0)) * plot;
@@ -540,23 +555,30 @@ function CompassChart({ point, highlightIdx, showNumbers }) {
     ctx.strokeRect(pad, pad, plot, plot);
   }, [point, highlightIdx, showNumbers]);
   return (
-    <div ref={containerRef} style={{ maxWidth: 460, margin: "0 auto" }}>
-      <canvas ref={canvasRef} />
+    <div ref={containerRef} style={{ maxWidth: CHART_MAX_SIZE, margin: "0 auto" }}>
+      <canvas ref={canvasRef} onClick={handleClick} style={{ cursor: onSelectArchetype ? "pointer" : "default" }} />
     </div>
   );
 }
 
 // ---- the "see all archetypes" view: full chart + every archetype's name/saint/description ----
 function AllArchetypes({ onBack }) {
+  const [selectedIdx, setSelectedIdx] = useState(null);
+  const visible = selectedIdx === null ? ARCHETYPES.map((a, i) => ({ a, i })) : [{ a: ARCHETYPES[selectedIdx], i: selectedIdx }];
   return (
     <div style={{ minHeight: "100vh", background: "#1a1a2e", color: "#fff", fontFamily: "system-ui, -apple-system, sans-serif", padding: "40px 20px" }}>
       <div style={{ maxWidth: 560, margin: "0 auto" }}>
         <h1 style={{ fontSize: 26, fontWeight: 700, textAlign: "center", marginBottom: 6 }}>All {ARCHETYPES.length} Archetypes</h1>
-        <p style={{ textAlign: "center", color: "rgba(255,255,255,0.4)", fontSize: 13, marginBottom: 24 }}>The whole map. Numbers on the chart match the list below.</p>
-        <CompassChart highlightIdx={-1} showNumbers={true} />
+        <p style={{ textAlign: "center", color: "rgba(255,255,255,0.4)", fontSize: 13, marginBottom: 24 }}>{selectedIdx === null ? "Click anywhere on the map to focus on a single archetype." : "Click another region to switch focus, or show the full list again."}</p>
+        <CompassChart highlightIdx={selectedIdx ?? -1} showNumbers={selectedIdx === null} onSelectArchetype={(idx) => setSelectedIdx((prev) => prev === idx ? null : idx)} />
+        {selectedIdx !== null && (
+          <div style={{ textAlign: "center", marginTop: 16 }}>
+            <button onClick={() => setSelectedIdx(null)} style={{ background: "none", border: "none", color: "rgba(255,220,100,0.7)", fontSize: 13, cursor: "pointer", textDecoration: "underline", textUnderlineOffset: "3px", padding: "6px 0" }}>Show all archetypes</button>
+          </div>
+        )}
         <div style={{ marginTop: 28, display: "flex", flexDirection: "column", gap: 12 }}>
-          {ARCHETYPES.map((a, i) => (
-            <div key={i} style={{ display: "flex", gap: 12, padding: "14px 16px", background: "rgba(255,255,255,0.04)", borderRadius: 10, alignItems: "flex-start" }}>
+          {visible.map(({ a, i }) => (
+            <div key={i} style={{ display: "flex", gap: 12, padding: "14px 16px", background: "rgba(255,255,255,0.04)", borderRadius: 10, alignItems: "flex-start", border: selectedIdx === i ? `1px solid ${a.color}` : "1px solid transparent" }}>
               <div style={{ flexShrink: 0, width: 26, textAlign: "right", fontFamily: "monospace", fontSize: 13, color: "rgba(255,255,255,0.4)", paddingTop: 2 }}>{i + 1}</div>
               <div style={{ flexShrink: 0, width: 12, height: 12, borderRadius: 3, background: a.color, marginTop: 4 }} />
               <div style={{ flex: 1 }}>
