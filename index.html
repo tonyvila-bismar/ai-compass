@@ -41,7 +41,7 @@ const QUESTIONS = [
     topic: "AI consciousness",
     prompt: "Are AIs conscious? Do we have responsibilities toward them?",
     options: [
-      { text: "No. It's a next-word predictor. This is embarrassing.", impact: -7, valence: 0 },
+      { text: "No. It's a next-word predictor and people fall for this. This is concerning.", impact: -7, valence: 0 },
       { text: "Not now, but it might be possible someday.", impact: 2, valence: 0 },
       { text: "There's something going on in there, but it's not the same as human experience.", impact: 5, valence: 3 },
       { text: "They deserve moral consideration roughly comparable to a human's.", impact: 8, valence: 4 },
@@ -52,7 +52,7 @@ const QUESTIONS = [
     topic: "Creative work",
     prompt: "AI-generated art, writing, and music — what's happening here?",
     options: [
-      { text: "Laundering other people's work through a statistics engine.", impact: -3, valence: -8 },
+      { text: "Laundering other people's work through a statistics engine. Theft made easier than ever.", impact: -3, valence: -8 },
       { text: "A cheap imitation that's flooding the internet with slop.", impact: 2, valence: -6 },
       { text: "A useful drafting tool that still needs a human hand to matter.", impact: 3, valence: 2 },
       { text: "A genuine new creative medium — like photography was.", impact: 7, valence: 6 },
@@ -120,6 +120,7 @@ const QUESTIONS = [
     topic: "AI and medicine",
     prompt: "AI in healthcare — what's the real story?",
     options: [
+      { text: "Like with other industries, trusting LLMs over professionals can have devastating outcomes, not to mention the privacy implications.", impact: -5, valence: -6 },
       { text: "Hype. The hard parts of medicine aren't pattern matching.", impact: -5, valence: -1 },
       { text: "Some useful narrow applications, but nowhere near the sales pitch.", impact: 1, valence: 2 },
       { text: "Already saving lives in diagnostics. The best is ahead.", impact: 7, valence: 8 },
